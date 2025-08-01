@@ -32,23 +32,35 @@
   <div class="stats">
     <p><strong>Visite totali:</strong> <span id="count">0</span></p>
     <div class="countries">
-      <h3>Visite per paese:</h3>
+      <h3>Visite per paese (calcolate client-side):</h3>
       <ul id="countries"></ul>
     </div>
   </div>
 
   <script>
-    async function loadStats() {
-      const res = await fetch('/api/track?id=locale123');
-      const data = await res.json();
+    const id = 'locale123';
+    const countryCounts = {};
 
+    async function loadStats() {
+      // Prendo il conteggio totale da API
+      const res = await fetch(`/api/track?id=${id}`);
+      const data = await res.json();
       document.getElementById('count').innerText = data.count || 0;
 
+      // Ora ottengo info paese con ipapi.co dal client
+      const geoRes = await fetch('https://ipapi.co/json/');
+      const geoData = await geoRes.json();
+      const country = geoData.country_name || 'Unknown';
+
+      // Aggiorno contatore locale
+      countryCounts[country] = (countryCounts[country] || 0) + 1;
+
+      // Mostro in lista
       const countriesList = document.getElementById('countries');
       countriesList.innerHTML = '';
-      for (const country in data.countries) {
+      for (const [c, count] of Object.entries(countryCounts)) {
         const li = document.createElement('li');
-        li.textContent = `${country}: ${data.countries[country]}`;
+        li.textContent = `${c}: ${count}`;
         countriesList.appendChild(li);
       }
     }
