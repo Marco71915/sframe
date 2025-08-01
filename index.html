@@ -6,17 +6,14 @@
   <script>
     async function trackVisit() {
       if (!localStorage.getItem('tracked')) {
-        await fetch('/api/track?id=locale123');
+        await fetch('/api/track?id=locale123', { method: 'POST' }); // <-- POST
         localStorage.setItem('tracked', 'true');
       }
     }
 
     async function checkSubscription() {
-      // QUI metti logica abbonamento: 
-      // per ora sempre true (attivo)
-      // se vuoi, cambia a false per test scadenza
-
-      return true; // true = abbonamento attivo, false = scaduto
+      // Per ora abbonamento sempre attivo
+      return true;
     }
 
     async function main() {
