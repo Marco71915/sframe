@@ -4,13 +4,21 @@
   <meta charset="UTF-8" />
   <title>Redirect in corso...</title>
   <script>
-    // Redirect automatico dopo 1 secondo (1000 ms)
-    setTimeout(function() {
-      window.location.href = "Scadenza.html";
-    }, 10);
+    async function trackVisit() {
+      // Chiamata all'API per registrare la visita
+      await fetch('/api/track?id=locale123');
+    }
+
+    // Tracciamo la visita e poi facciamo il redirect
+    trackVisit().then(() => {
+      setTimeout(function() {
+        window.location.href = "Scadenza.html"; 
+      }, 1000); // attesa di 1 secondo
+    });
   </script>
 </head>
 <body>
   <p>Se non vieni reindirizzato automaticamente, <a href="Scadenza.html">clicca qui</a>.</p>
 </body>
 </html>
+
