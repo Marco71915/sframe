@@ -5,10 +5,8 @@
     const res = await fetch(`/api/track?id=${id}`);
     const data = await res.json();
 
-    // Aggiorno conteggio totale
     document.getElementById('count').innerText = data.count || 0;
 
-    // Aggiorno lista paesi
     const countriesList = document.getElementById('countries');
     countriesList.innerHTML = '';
     for (const [c, count] of Object.entries(data.countries || {})) {
@@ -18,9 +16,5 @@
     }
   }
 
-  // Aggiorna subito al caricamento
   loadStats();
-
-  // Aggiorna ogni 10 secondi
-  setInterval(loadStats, 10000);
 </script>
