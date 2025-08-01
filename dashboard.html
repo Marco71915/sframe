@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard QR</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #f0f0f0;
+      padding: 2rem;
+    }
+    h1 {
+      color: #333;
+    }
+    .stats {
+      background: white;
+      display: inline-block;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin-top: 20px;
+    }
+    .countries {
+      margin-top: 10px;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <h1>Statistiche QR</h1>
+  <div class="stats">
+    <p><strong>Visite totali:</strong> <span id="count">0</span></p>
+    <div class="countries">
+      <h3>Visite per paese:</h3>
+      <ul id="countries"></ul>
+    </div>
+  </div>
+
+  <script>
+    async function loadStats() {
+      const res = await fetch('/api/track?id=locale123');
+      const data = await res.json();
+
+      document.getElementById('count').innerText = data.count || 0;
+
+      const countriesList = document.getElementById('countries');
+      countriesList.innerHTML = '';
+      for (const country in data.countries) {
+        const li = document.createElement('li');
+        li.textContent = `${country}: ${data.countries[country]}`;
+        countriesList.appendChild(li);
+      }
+    }
+
+    loadStats();
+  </script>
+</body>
+</html>
