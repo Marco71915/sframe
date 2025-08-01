@@ -25,10 +25,6 @@
       margin-top: 10px;
       text-align: left;
     }
-    #error {
-      color: red;
-      margin-top: 20px;
-    }
   </style>
 </head>
 <body>
@@ -40,34 +36,29 @@
       <ul id="countries"></ul>
     </div>
   </div>
-  <p id="error"></p>
 
   <script>
     async function loadStats() {
       try {
-        const res = await fetch('/api/track?id=locale123');
-        if (!res.ok) throw new Error('Errore nel caricamento API');
+        const res = await fetch('/api/track');
         const data = await res.json();
 
         document.getElementById('count').innerText = data.count || 0;
 
         const countriesList = document.getElementById('countries');
         countriesList.innerHTML = '';
+
         for (const [country, count] of Object.entries(data.countries || {})) {
           const li = document.createElement('li');
           li.textContent = `${country}: ${count}`;
           countriesList.appendChild(li);
         }
-      } catch (err) {
-        document.getElementById('error').innerText = 'Errore nel caricamento delle statistiche';
-        console.error(err);
+      } catch (e) {
+        console.error('Errore caricamento stats:', e);
       }
     }
 
     loadStats();
-
-    // Opzionale: aggiorna ogni 10 secondi
-    setInterval(loadStats, 10000);
   </script>
 </body>
 </html>
