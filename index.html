@@ -6,14 +6,29 @@
   <script>
     async function trackVisit() {
       if (!localStorage.getItem('tracked')) {
-        await fetch('/api/track?id=locale123', { method: 'POST' }); // <-- POST
+        // Prende paese dal browser
+        let country = 'Unknown';
+        try {
+          const geoRes = await fetch('https://ipapi.co/json/');
+          const geoData = await geoRes.json();
+          country = geoData.country_name || 'Unknown';
+        } catch (err) {
+          console.error('Errore nel rilevamento paese:', err);
+        }
+
+        // Invia al server
+        await fetch('/api/track?id=locale123', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ country })
+        });
+
         localStorage.setItem('tracked', 'true');
       }
     }
 
     async function checkSubscription() {
-      // Per ora abbonamento sempre attivo
-      return true;
+      return true; // Per ora l'abbonamento è sempre attivo
     }
 
     async function main() {
