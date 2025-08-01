@@ -5,20 +5,38 @@
   <title>Redirect in corso...</title>
   <script>
     async function trackVisit() {
-      // Chiamata all'API per registrare la visita
-      await fetch('/api/track?id=locale123');
+      if (!localStorage.getItem('tracked')) {
+        await fetch('/api/track?id=locale123');
+        localStorage.setItem('tracked', 'true');
+      }
     }
 
-    // Tracciamo la visita e poi facciamo il redirect
-    trackVisit().then(() => {
-      setTimeout(function() {
-        window.location.href = "Scadenza.html"; 
-      }, 1000); // attesa di 1 secondo
-    });
+    async function checkSubscription() {
+      // QUI metti logica abbonamento: 
+      // per ora sempre true (attivo)
+      // se vuoi, cambia a false per test scadenza
+
+      return true; // true = abbonamento attivo, false = scaduto
+    }
+
+    async function main() {
+      await trackVisit();
+
+      const active = await checkSubscription();
+
+      setTimeout(() => {
+        if (active) {
+          window.location.href = "Pagina_tipo_Linktree.html";
+        } else {
+          window.location.href = "Scadenza.html";
+        }
+      }, 1000);
+    }
+
+    main();
   </script>
 </head>
 <body>
-  <p>Se non vieni reindirizzato automaticamente, <a href="Scadenza.html">clicca qui</a>.</p>
+  <p>Se non vieni reindirizzato automaticamente, <a href="Pagina_tipo_Linktree.html">clicca qui</a>.</p>
 </body>
 </html>
-
