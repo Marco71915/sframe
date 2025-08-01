@@ -6,7 +6,6 @@
   <script>
     async function trackVisit() {
       if (!localStorage.getItem('tracked')) {
-        // Prende paese dal browser
         let country = 'Unknown';
         try {
           const geoRes = await fetch('https://ipapi.co/json/');
@@ -16,7 +15,6 @@
           console.error('Errore nel rilevamento paese:', err);
         }
 
-        // Invia al server
         await fetch('/api/track?id=locale123', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -28,14 +26,13 @@
     }
 
     async function checkSubscription() {
-      return true; // Per ora l'abbonamento è sempre attivo
+      return true; // Abbonamento attivo per test
     }
 
     async function main() {
       await trackVisit();
 
       const active = await checkSubscription();
-
       setTimeout(() => {
         if (active) {
           window.location.href = "Pagina_tipo_Linktree.html";
