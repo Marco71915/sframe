@@ -14,5 +14,8 @@ export default async function handler(req, res) {
     visits.countries[c] = (visits.countries[c] || 0) + 1;
   }
 
-  res.status(200).json(visits);
+  res.status(200).json({
+    count: visits.count,
+    countries: visits.countries
+  });
 }
