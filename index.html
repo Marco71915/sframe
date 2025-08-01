@@ -2,50 +2,67 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <title>Redirect in corso...</title>
-  <script>
-    async function trackVisit() {
-      if (!localStorage.getItem('tracked')) {
-        let country = 'Unknown';
-        try {
-          const geoRes = await fetch('https://ipapi.co/json/');
-          const geoData = await geoRes.json();
-          country = geoData.country_name || 'Unknown';
-        } catch (err) {
-          console.error('Errore nel rilevamento paese:', err);
-        }
-
-        await fetch('/api/track?id=locale123', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ country })
-        });
-
-        localStorage.setItem('tracked', 'true');
-      }
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sframe - Link Page</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #e0f7ff; /* Azzurrino */
+      text-align: center;
+      padding: 2rem;
     }
-
-    async function checkSubscription() {
-      return true; // Abbonamento attivo per test
+    .logo {
+      max-width: 150px;
+      border-radius: 50%;
+      margin: 0 auto 2rem;
     }
-
-    async function main() {
-      await trackVisit();
-
-      const active = await checkSubscription();
-      setTimeout(() => {
-        if (active) {
-          window.location.href = "Pagina_tipo_Linktree.html";
-        } else {
-          window.location.href = "Scadenza.html";
-        }
-      }, 1000);
+    .link-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: white;
+      border-radius: 12px;
+      padding: 1rem;
+      margin: 1rem auto;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      text-decoration: none;
+      color: black;
+      font-weight: bold;
+      transition: transform 0.2s ease;
     }
-
-    main();
-  </script>
+    .link-button:hover {
+      transform: scale(1.03);
+    }
+    .icon {
+      width: 24px;
+      height: 24px;
+      margin-right: 12px;
+    }
+  </style>
 </head>
 <body>
-  <p>Se non vieni reindirizzato automaticamente, <a href="Pagina_tipo_Linktree.html">clicca qui</a>.</p>
+  <!-- Logo -->
+  <img src="logo.png" alt="Logo Sframe" class="logo" />
+
+  <!-- Instagram link -->
+  <a class="link-button" href="https://instagram.com/_sframe_" target="_blank" rel="noopener noreferrer">
+    <img class="icon" src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram" />
+    Seguici su Instagram
+  </a>
+
+  <!-- WhatsApp link -->
+  <a class="link-button" href="https://wa.me/393512430225" target="_blank" rel="noopener noreferrer">
+    <img class="icon" src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp" />
+    Scrivici su WhatsApp
+  </a>
+
+  <!-- Script per tracciare la visita -->
+  <script>
+    fetch('/api/track?id=locale123&action=visit')
+      .catch(e => console.error('Errore fetch visit:', e));
+  </script>
 </body>
 </html>
