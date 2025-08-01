@@ -43,31 +43,31 @@
   <p id="error"></p>
 
   <script>
-    const id = 'locale123';
-
     async function loadStats() {
       try {
-        const res = await fetch(`/api/track?id=${id}`);
+        const res = await fetch('/api/track?id=locale123');
         if (!res.ok) throw new Error('Errore nel caricamento API');
         const data = await res.json();
-        console.log('Dati ricevuti:', data);
 
         document.getElementById('count').innerText = data.count || 0;
 
         const countriesList = document.getElementById('countries');
         countriesList.innerHTML = '';
-        for (const [c, count] of Object.entries(data.countries || {})) {
+        for (const [country, count] of Object.entries(data.countries || {})) {
           const li = document.createElement('li');
-          li.textContent = `${c}: ${count}`;
+          li.textContent = `${country}: ${count}`;
           countriesList.appendChild(li);
         }
       } catch (err) {
-        console.error(err);
         document.getElementById('error').innerText = 'Errore nel caricamento delle statistiche';
+        console.error(err);
       }
     }
 
     loadStats();
+
+    // Opzionale: aggiorna ogni 10 secondi
+    setInterval(loadStats, 10000);
   </script>
 </body>
 </html>
