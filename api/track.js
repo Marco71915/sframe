@@ -1,17 +1,35 @@
-let stats = { count: 0, countries: {} };
+import fs from 'fs';
+import path from 'path';
 
-export default function handler(req, res) {
-  const { action, country } = req.query;
+export default async function handler(req, res) {
+  const filePath = path.join(process.cwd(), 'data.json');
 
-  if (action === 'visit') {
-    stats.count++;
-
-    if (country) {
-      stats.countries[country] = (stats.countries[country] || 0) + 1;
-    } else {
-      stats.countries['Unknown'] = (stats.countries['Unknown'] || 0) + 1;
-    }
+  // Leggi i dati dal file JSON
+  let data = { count: 0, countries: {} };
+  if (fs.existsSync(filePath)) {
+    const fileContent = fs.readFileSync(filePath, 'utf-8');
+    data = JSON.parse(fileContent);
   }
 
-  res.status(200).json(stats);
+  if (req.method === 'POST') {
+    // Quando arriva una nuova visita
+    const { country } = req.body || {};
+    data.count += 1;
+
+    if (country) {
+      data.countries[country] = (data.countries[country] || 0) + 1;
+    } else {
+      data.countries['Unknown'] = (data.countries['Unknown'] || 0) + 1;
+    }
+
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+    return res.status(200).json({ success: true, data });
+  }
+
+  if (req.method === 'GET') {
+    // Quando si leggono le statistiche
+    return res.status(200).json(data);
+  }
+
+  res.status(405).json({ message: 'Method not allowed' });
 }
