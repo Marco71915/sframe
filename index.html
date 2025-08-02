@@ -66,14 +66,16 @@
         const geoData = await geoRes.json();
         const country = geoData.country_name || 'Unknown';
 
-        await fetch(`/api/track?action=visit&country=${encodeURIComponent(country)}`);
+        await fetch('/api/track', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ country })
+        });
       } catch (e) {
         console.error('Errore tracking visita:', e);
-        await fetch('/api/track?action=visit');
       }
     }
     trackVisit();
   </script>
 </body>
 </html>
-
