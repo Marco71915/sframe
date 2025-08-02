@@ -1,35 +1,31 @@
-import fs from 'fs';
-import path from 'path';
+import { kv } from '@vercel/kv';
 
 export default async function handler(req, res) {
-  const filePath = path.join(process.cwd(), 'data.json');
+  const { action, country } = req.query;
 
-  // Leggi i dati dal file JSON
-  let data = { count: 0, countries: {} };
-  if (fs.existsSync(filePath)) {
-    const fileContent = fs.readFileSync(filePath, 'utf-8');
-    data = JSON.parse(fileContent);
-  }
+  if (action === 'visit') {
+    let count = await kv.get('visits');
+    let countries = await kv.get('countries');
 
-  if (req.method === 'POST') {
-    // Quando arriva una nuova visita
-    const { country } = req.body || {};
-    data.count += 1;
+    if (!count) count = 0;
+    if (!countries) countries = {};
 
+    count++;
     if (country) {
-      data.countries[country] = (data.countries[country] || 0) + 1;
-    } else {
-      data.countries['Unknown'] = (data.countries['Unknown'] || 0) + 1;
+      countries[country] = (countries[country] || 0) + 1;
     }
 
-    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
-    return res.status(200).json({ success: true, data });
+    await kv.set('visits', count);
+    await kv.set('countries', countries);
+
+    return res.status(200).json({ success: true });
   }
 
-  if (req.method === 'GET') {
-    // Quando si leggono le statistiche
-    return res.status(200).json(data);
+  if (action === 'stats') {
+    const count = (await kv.get('visits')) || 0;
+    const countries = (await kv.get('countries')) || {};
+    return res.status(200).json({ count, countries });
   }
 
-  res.status(405).json({ message: 'Method not allowed' });
+  return res.status(400).json({ error: 'Azione non valida' });
 }
