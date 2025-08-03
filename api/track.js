@@ -1,31 +1,39 @@
-import { kv } from '@vercel/kv';
+import { Redis } from '@upstash/redis';
+
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN,
+});
 
 export default async function handler(req, res) {
   const { action, country } = req.query;
 
-  if (action === 'visit') {
-    let count = await kv.get('visits');
-    let countries = await kv.get('countries');
+  try {
+    if (action === 'visit') {
+      // Incremento contatore totale
+      await redis.incr('visits:total');
 
-    if (!count) count = 0;
-    if (!countries) countries = {};
-
-    count++;
-    if (country) {
-      countries[country] = (countries[country] || 0) + 1;
+      // Incremento contatore per paese
+      if (country) {
+        await redis.incr(`visits:country:${country}`);
+      }
+      return res.status(200).json({ message: 'Visit tracked' });
     }
 
-    await kv.set('visits', count);
-    await kv.set('countries', countries);
+    // Recupero statistiche
+    const total = (await redis.get('visits:total')) || 0;
+    const keys = await redis.keys('visits:country:*');
 
-    return res.status(200).json({ success: true });
+    const countries = {};
+    for (const key of keys) {
+      const count = await redis.get(key);
+      const countryName = key.replace('visits:country:', '');
+      countries[countryName] = Number(count);
+    }
+
+    return res.status(200).json({ count: total, countries });
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ error: 'Internal server error' });
   }
-
-  if (action === 'stats') {
-    const count = (await kv.get('visits')) || 0;
-    const countries = (await kv.get('countries')) || {};
-    return res.status(200).json({ count, countries });
-  }
-
-  return res.status(400).json({ error: 'Azione non valida' });
 }
