@@ -7,30 +7,12 @@ const redis = new Redis({
 
 export default async function handler(req, res) {
   try {
-    const { action, country } = req.query;
+    // Incrementa un contatore, es. 'page_views'
+    const count = await redis.incr('page_views');
 
-    // Incremento visite solo se action = visit
-    if (action === 'visit') {
-      await redis.incr('visits');
-      if (country) {
-        await redis.incr(`country:${country}`);
-      }
-      return res.status(200).json({ success: true });
-    }
-
-    // Ottengo statistiche
-    const count = (await redis.get('visits')) || 0;
-    const keys = await redis.keys('country:*');
-
-    const countries = {};
-    for (const key of keys) {
-      const countryName = key.replace('country:', '');
-      countries[countryName] = await redis.get(key);
-    }
-
-    return res.status(200).json({ count, countries });
-  } catch (err) {
-    console.error('Errore API track:', err);
-    return res.status(500).json({ error: 'Internal Server Error' });
+    res.status(200).json({ success: true, count });
+  } catch (error) {
+    console.error('Errore Redis:', error);
+    res.status(500).json({ success: false, message: 'Errore server' });
   }
 }
