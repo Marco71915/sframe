@@ -9,24 +9,28 @@ export default async function handler(req, res) {
   try {
     const { action, country } = req.query;
 
+    // Incremento visite solo se action = visit
     if (action === 'visit') {
-      // Incrementa contatore totale
-      await redis.incr('count');
+      await redis.incr('visits');
       if (country) {
-        await redis.hincrby('countries', country.toLowerCase(), 1);
+        await redis.incr(`country:${country}`);
       }
       return res.status(200).json({ success: true });
     }
 
-    if (action === 'stats') {
-      const count = await redis.get('count') || 0;
-      const countries = await redis.hgetall('countries') || {};
-      return res.status(200).json({ count: Number(count), countries });
+    // Ottengo statistiche
+    const count = (await redis.get('visits')) || 0;
+    const keys = await redis.keys('country:*');
+
+    const countries = {};
+    for (const key of keys) {
+      const countryName = key.replace('country:', '');
+      countries[countryName] = await redis.get(key);
     }
 
-    res.status(400).json({ error: 'Invalid action' });
-  } catch (error) {
-    console.error('API error:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    return res.status(200).json({ count, countries });
+  } catch (err) {
+    console.error('Errore API track:', err);
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 }
