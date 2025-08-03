@@ -6,34 +6,27 @@ const redis = new Redis({
 });
 
 export default async function handler(req, res) {
-  const { action, country } = req.query;
-
   try {
+    const { action, country } = req.query;
+
     if (action === 'visit') {
-      // Incremento contatore totale
-      await redis.incr('visits:total');
-
-      // Incremento contatore per paese
+      // Incrementa contatore totale
+      await redis.incr('count');
       if (country) {
-        await redis.incr(`visits:country:${country}`);
+        await redis.hincrby('countries', country.toLowerCase(), 1);
       }
-      return res.status(200).json({ message: 'Visit tracked' });
+      return res.status(200).json({ success: true });
     }
 
-    // Recupero statistiche
-    const total = (await redis.get('visits:total')) || 0;
-    const keys = await redis.keys('visits:country:*');
-
-    const countries = {};
-    for (const key of keys) {
-      const count = await redis.get(key);
-      const countryName = key.replace('visits:country:', '');
-      countries[countryName] = Number(count);
+    if (action === 'stats') {
+      const count = await redis.get('count') || 0;
+      const countries = await redis.hgetall('countries') || {};
+      return res.status(200).json({ count: Number(count), countries });
     }
 
-    return res.status(200).json({ count: total, countries });
-  } catch (e) {
-    console.error(e);
-    return res.status(500).json({ error: 'Internal server error' });
+    res.status(400).json({ error: 'Invalid action' });
+  } catch (error) {
+    console.error('API error:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 }
