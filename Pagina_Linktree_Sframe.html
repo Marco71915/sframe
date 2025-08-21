@@ -8,17 +8,18 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: url('sfondo.jpg') no-repeat center center fixed; /* Immagine di sfondo */
-      background-size: cover; /* L'immagine copre tutto lo schermo */
+      background: linear-gradient(180deg, #a8d8ff, #ffffff) no-repeat fixed; /* Azzurro sfumato verso bianco */
+      background-size: cover; /* Si adatta a tutto lo schermo */
       text-align: center;
       padding: 2rem;
       color: white;
     }
     .logo {
-      max-width: 300px; /* Logo più grande */
-      border-radius: 0; /* Logo quadrato */
+      max-width: 200px;
+      border-radius: 50%; /* Logo rotondo */
       margin: 0 auto 2rem;
       display: block;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
     .link-button {
       display: flex;
@@ -49,7 +50,7 @@
 </head>
 <body>
   <!-- Logo -->
-  <img src="logo.png" alt="Logo Amici Beniamini" class="logo" />
+  <img src="logo.png" alt="Logo Sframe" class="logo" />
 
   <!-- WhatsApp link -->
   <a class="link-button" href="https://wa.me/393289086880" target="_blank">
@@ -57,7 +58,7 @@
     Scrivici su WhatsApp
   </a>
 
-  <!-- WhatsApp link -->
+  <!-- Catalogo WhatsApp -->
   <a class="link-button" href="https://wa.me/c/393289086880" target="_blank">
     <img class="icon" src="https://cdn-icons-png.flaticon.com/512/1828/1828859.png" alt="Menu" />
     Sfoglia il nostro Catalogo
@@ -76,7 +77,6 @@
   </a>
 
   <script>
-    // Funzione generica per tentare apertura app + fallback web
     function openAppOrWeb(appUrl, webUrl) {
       const start = Date.now();
       window.location = appUrl;
@@ -91,7 +91,6 @@
     document.getElementById('facebookButton').addEventListener('click', function () {
       openAppOrWeb('fb://page/61579646001877', 'https://www.facebook.com/sframe.2025');
     });
-
   </script>
 </body>
 </html>
