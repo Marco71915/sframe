@@ -8,14 +8,17 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #e0f7ff; /* Azzurrino */
+      background: url('sfondo.jpg') no-repeat center center fixed; /* Immagine di sfondo */
+      background-size: cover; /* L'immagine copre tutto lo schermo */
       text-align: center;
       padding: 2rem;
+      color: white;
     }
     .logo {
-      max-width: 150px;
-      border-radius: 50%;
+      max-width: 300px; /* Logo più grande */
+      border-radius: 0; /* Logo quadrato */
       margin: 0 auto 2rem;
+      display: block;
     }
     .link-button {
       display: flex;
@@ -27,11 +30,12 @@
       margin: 1rem auto;
       width: 90%;
       max-width: 400px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
       text-decoration: none;
       color: black;
       font-weight: bold;
-      transition: transform 0.2s ease;
+      transition: transform 0.2s ease, background 0.2s ease;
+      cursor: pointer;
     }
     .link-button:hover {
       transform: scale(1.03);
@@ -45,18 +49,49 @@
 </head>
 <body>
   <!-- Logo -->
-  <img src="logo.png" alt="Logo Sframe" class="logo" />
-
-  <!-- Instagram link -->
-  <a class="link-button" href="https://instagram.com/_sframe_" target="_blank">
-    <img class="icon" src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram" />
-    Seguici su Instagram
-  </a>
+  <img src="logo.png" alt="Logo Amici Beniamini" class="logo" />
 
   <!-- WhatsApp link -->
-  <a class="link-button" href="https://wa.me/393512430225" target="_blank">
+  <a class="link-button" href="https://wa.me/393289086880" target="_blank">
     <img class="icon" src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp" />
     Scrivici su WhatsApp
   </a>
+
+  <!-- WhatsApp link -->
+  <a class="link-button" href="https://wa.me/c/393289086880" target="_blank">
+    <img class="icon" src="https://cdn-icons-png.flaticon.com/512/1828/1828859.png" alt="Menu" />
+    Sfoglia il nostro Catalogo
+  </a>
+
+  <!-- Bottone Facebook -->
+  <div class="link-button" id="facebookButton" role="button" tabindex="0">
+    <img class="icon" src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook" />
+    Seguici su Facebook
+  </div>
+
+  <!-- Bottone Google Recensioni -->
+  <a class="link-button" href="https://g.page/r/CYKb3Q3rtP9CEAE/review" target="_blank" rel="noopener noreferrer">
+    <img class="icon" src="https://cdn-icons-png.flaticon.com/512/300/300221.png" alt="Google" />
+    Lasciaci una Recensione
+  </a>
+
+  <script>
+    // Funzione generica per tentare apertura app + fallback web
+    function openAppOrWeb(appUrl, webUrl) {
+      const start = Date.now();
+      window.location = appUrl;
+
+      setTimeout(function() {
+        if (Date.now() - start < 1500) {
+          window.open(webUrl, '_blank');
+        }
+      }, 1000);
+    }
+
+    document.getElementById('facebookButton').addEventListener('click', function () {
+      openAppOrWeb('fb://page/61579646001877', 'https://www.facebook.com/sframe.2025');
+    });
+
+  </script>
 </body>
 </html>
