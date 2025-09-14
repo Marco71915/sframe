@@ -64,11 +64,17 @@
     Sfoglia il nostro Catalogo
   </a>
 
-  <!-- Bottone Facebook -->
-  <div class="link-button" id="facebookButton" role="button" tabindex="0">
+  <!-- Bottone Instagram -->
+  <div class="link-button" id="instagramButton" role="button" tabindex="0">
+    <img class="icon" src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram" />
+    Seguici su Instagram
+  </div>
+
+  <!-- Bottone Facebook (link diretto al profilo web) -->
+  <a class="link-button" href="https://www.facebook.com/sframe.2025" target="_blank">
     <img class="icon" src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook" />
     Seguici su Facebook
-  </div>
+  </a>
 
   <!-- Bottone Google Recensioni -->
   <a class="link-button" href="https://g.page/r/CYKb3Q3rtP9CEAE/review" target="_blank" rel="noopener noreferrer">
@@ -77,10 +83,11 @@
   </a>
 
   <script>
+
+    // Funzione generica per tentare apertura app + fallback web
     function openAppOrWeb(appUrl, webUrl) {
       const start = Date.now();
       window.location = appUrl;
-
       setTimeout(function() {
         if (Date.now() - start < 1500) {
           window.open(webUrl, '_blank');
@@ -88,8 +95,8 @@
       }, 1000);
     }
 
-    document.getElementById('facebookButton').addEventListener('click', function () {
-      openAppOrWeb('fb://page/61579646001877', 'https://www.facebook.com/sframe.2025');
+    document.getElementById('instagramButton').addEventListener('click', function () {
+      openAppOrWeb('instagram://user?username=_sframe_', 'https://www.instagram.com/_sframe_/');
     });
   </script>
 </body>
